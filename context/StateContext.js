@@ -26,8 +26,6 @@ export const StateContext = ({ children }) => {
             prevTotalQty + quantity,
         );
 
-
-        localStorage.setItem('quantity', JSON.stringify(totalQuantities + quantity));
         // Check if items already in the cart
         if (checkProductInCart) {
             // Update only the quantity
@@ -48,7 +46,10 @@ export const StateContext = ({ children }) => {
             localStorage.setItem('cart', JSON.stringify(newCartItems));
         }
         toast.success(`${qty} ${product.name} added to cart`);
-        localStorage.setItem('quantity', JSON.stringify(totalQuantities));
+        localStorage.setItem('totalQuantity', JSON.stringify(totalQuantities + quantity));
+        localStorage.setItem(
+            'totalPrice', JSON.stringify(totalPrice + product.price * quantity)
+        );
     };
 
     // Remove products from the cart
@@ -62,7 +63,12 @@ export const StateContext = ({ children }) => {
         setTotalQuantities(prevTotalQty => prevTotalQty - foundProduct.quantity);
         setCartItems(newCartItem);
         localStorage.setItem('cart', JSON.stringify(newCartItem));
-        localStorage.setItem('quantity', JSON.stringify(totalQuantities - foundProduct.quantity));
+        localStorage.setItem(
+            'totalQuantity', JSON.stringify(totalQuantities - foundProduct.quantity)
+        );
+        localStorage.setItem(
+            'totalPrice', JSON.stringify(totalPrice - foundProduct.price * foundProduct.quantity)
+        );
     }
 
 
@@ -85,10 +91,14 @@ export const StateContext = ({ children }) => {
             setTotalPrice(prevTotalPrice =>
                 prevTotalPrice + foundProduct.price
             );
+            localStorage.setItem(
+                'totalPrice', JSON.stringify(totalPrice + foundProduct.price)
+            );
+
             setTotalQuantities(prevTotalQuantities =>
                 prevTotalQuantities + 1
             )
-            localStorage.setItem('quantity', JSON.stringify(totalQuantities + 1));
+            localStorage.setItem('totalQuantity', JSON.stringify(totalQuantities + 1));
         } else if (value === 'dec') {
             if (foundProduct.quantity > 1) {
                 setCartItems(
@@ -105,10 +115,14 @@ export const StateContext = ({ children }) => {
                 setTotalPrice(prevTotalPrice =>
                     prevTotalPrice - foundProduct.price
                 );
+                localStorage.setItem(
+                    'totalPrice', JSON.stringify(totalPrice - foundProduct.price)
+                );
+
                 setTotalQuantities(prevTotalQuantities =>
                     prevTotalQuantities - 1
                 )
-                localStorage.setItem('quantity', JSON.stringify(totalQuantities - 1));
+                localStorage.setItem('totalQuantity', JSON.stringify(totalQuantities - 1));
             }
         }
     }
@@ -116,19 +130,25 @@ export const StateContext = ({ children }) => {
     // Increase or decrease quantity of a product
     const increaseQty = () => {
         setQty((prevQty) => prevQty + 1);
+        localStorage.setItem('qty', JSON.stringify(qty + 1));
     }
     const decreaseQty = () => {
         setQty((prevQty) => {
             if (prevQty - 1 < 1) return 1;
             return prevQty - 1;
         });
+        localStorage.setItem('qty', JSON.stringify(qty - 1));
     };
 
     useEffect(() => {
         let storedCart = JSON.parse(localStorage.getItem('cart')) || [];
-        let storedQuantity = JSON.parse(localStorage.getItem('quantity')) || 0;
+        let storedTotalQuantity = JSON.parse(localStorage.getItem('totalQuantity')) || 0;
+        let storedQty = JSON.parse(localStorage.getItem('qty')) || 1;
+        let storedTotalPrice = JSON.parse(localStorage.getItem('totalPrice')) || 0;
         setCartItems(storedCart);
-        setTotalQuantities(storedQuantity);
+        setTotalQuantities(storedTotalQuantity);
+        setQty(storedQty);
+        setTotalPrice(storedTotalPrice);
     }, []);
 
     return (
@@ -143,6 +163,7 @@ export const StateContext = ({ children }) => {
                 totalQuantities,
                 setTotalQuantities,
                 qty,
+                setQty,
                 increaseQty,
                 decreaseQty,
                 onAdd,
