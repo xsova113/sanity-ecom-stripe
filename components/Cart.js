@@ -8,6 +8,7 @@ import { TiDeleteOutline } from 'react-icons/ti';
 import { useStateContext } from '../context/StateContext';
 import { urlFor } from '../lib/client';
 import getStripe from '../lib/getStripe';
+import Image from 'next/image';
 
 const Cart = () => {
   const cartRef = useRef();
@@ -69,6 +70,7 @@ return (
           <div className='product' key={item._id}>
             <img
               src={urlFor(item.image[0])}
+              alt='item image'
               className='cart-product-image'
             />
             <div className='item-desc'>
