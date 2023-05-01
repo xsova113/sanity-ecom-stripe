@@ -1,7 +1,7 @@
-import { Footer, Navbar } from '../components'
+import { Footer, Navbar } from '.'
 import Head from 'next/head'
 
-export function Layout({ children }) {
+export default function Layout({ children }) {
   return (
     <div className='layout'>
       <Head>
