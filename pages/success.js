@@ -13,7 +13,7 @@ const Success = () => {
         setTotalPrice(0);
         setTotalQuantities(0);
         runConfetti();
-    }, [])
+    }, [setCartItems, setTotalPrice, setTotalQuantities])
 
     return (
         <div className='success-wrapper'>

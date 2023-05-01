@@ -68,10 +68,12 @@ return (
       <div className='product-container'>
         {cartItems.length >= 1 && cartItems.map((item, index) => (
           <div className='product' key={item._id}>
-            <img
-              src={urlFor(item.image[0])}
+            <Image
+              src={urlFor(item.image[0]).url()}
               alt='item image'
               className='cart-product-image'
+              width='600'
+              height='600'
             />
             <div className='item-desc'>
               <div className='flex top-6'>
